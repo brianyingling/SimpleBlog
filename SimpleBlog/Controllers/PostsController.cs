@@ -9,8 +9,8 @@ namespace SimpleBlog.Controllers
     public class PostsController : Controller
     {
         public ActionResult Index() {
-            return Content("Hello World");
-
+            //return Content("Hello World");
+            return View();
             // View, File, Content are all types of ActionResult
         }
     }
