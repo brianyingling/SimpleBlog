@@ -6,6 +6,7 @@ using System.Web.Mvc;
 
 namespace SimpleBlog.Areas.Admin.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class PostsController : Controller
     {
         // GET: Admin/Posts
