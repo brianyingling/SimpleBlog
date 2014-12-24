@@ -31,8 +31,6 @@ namespace SimpleBlog.App_Start
                     .Include("~/Scripts/jquery.validate.js")
                     .Include("~/Scripts/jquery.validate.unobtrusive.js")
                     .Include("~/Scripts/bootstrap.js"));
-               
-
         }
     }
 }
