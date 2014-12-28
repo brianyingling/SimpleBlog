@@ -22,6 +22,20 @@ namespace SimpleBlog
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+
+            Database.Configure();
+        }
+
+        // invoked by ASP.NET at the start of each request
+        protected void Application_BeginRequest() 
+        {
+            Database.OpenSession();
+        }
+
+        // invoked by ASP.NET at the end of each request
+        protected void Application_EndRequest() 
+        {
+            Database.CloseSession();
         }
     }
 }
