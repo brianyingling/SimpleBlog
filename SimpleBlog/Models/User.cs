@@ -5,14 +5,25 @@ namespace SimpleBlog.Models
 {
     public class User
     {
+        private const int WORK_FACTOR = 13;
+        // created to prevent timed attacks to determine users
+        public static void FakeHash() {
+            BCrypt.Net.BCrypt.HashPassword("", WORK_FACTOR);
+        }
+
         public virtual int Id { get; set; }
         public virtual string Username { get; set; }
         public virtual string Email { get; set; }
         public virtual string PasswordHash { get; set; }
 
-        public virtual void SetPassword(string p)
+        public virtual void SetPassword(string password)
         {
-            PasswordHash = "Ignore me";
+            PasswordHash = BCrypt.Net.BCrypt.HashPassword(password, 13);
+        }
+
+        public virtual bool CheckPassword(string password) 
+        {
+            return BCrypt.Net.BCrypt.Verify(password, PasswordHash);
         }
     }
 
