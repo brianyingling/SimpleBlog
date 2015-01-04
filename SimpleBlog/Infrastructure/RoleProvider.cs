@@ -10,10 +10,11 @@ namespace SimpleBlog.Infrastructure
     {
         public override string[] GetRolesForUser(string username)
         {
-            if (username == "brian")
-                return new[] { "admin" };
+            return Auth.User.Roles.Select(role => role.Name).ToArray();
+            //if (username == "brian")
+            //    return new[] { "admin" };
 
-            return new string[] {}; 
+            //return new string[] {}; 
         }
 
 
