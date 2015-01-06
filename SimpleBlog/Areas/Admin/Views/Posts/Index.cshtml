@@ -41,6 +41,67 @@
         }
     </div>
     
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Tags</th>
+                <th>Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var post in Model.Posts) 
+            {
+                var cls = "";
+                if (post.IsDeleted) {
+                    cls = "danger";
+                } 
+                <tr>
+                    <td>@post.Title</td>
+                    <td>@post.User.Username</td>
+                    <td>@string.Join(", ", post.Tags.Select(t => t.Name))</td>
+                    <td>@post.CreatedAt</td>
+                    <td>
+                        <a href="@Url.Action("edit", new { post.Id})" class="btn btn-primary btn-xs">
+                            <i class="glyphicon glyphicon-edit"></i>
+                            Edit
+                        </a>
+
+                        @if (!post.IsDeleted) { 
+                            <div class="btn-group btn-group-xs">
+                                <a href="#" class="btn btn-danger">
+                                    <i class="glyphicon glyphicon-remove"></i>
+                                    Trash
+                                </a>
+                                <a href="#" class="btn btn-danger dropdown-toggle" data-toggle="dropdown">
+                                    <span class="caret"></span>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a href="#">
+                                            <i class="glyphicon glyphicon-remove"></i>
+                                            Delete
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        }
+                        else
+                        { 
+                             <a href="#" class="btn btn-xs btn-success">
+                                 <i class="glyphicon glyphicon-plus-sign"></i>
+                                 Restore
+                             </a>   
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+
+    </table>
+
     <ul>
         @foreach (var item in Model.Posts)
         {
