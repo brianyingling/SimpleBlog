@@ -14,6 +14,10 @@ namespace SimpleBlog.Models
         public virtual string Name { get; set; }
 
         public virtual IList<Post> Posts { get; set; }
+
+        public Tag() {
+            Posts = new List<Post>(); 
+        }
     }
 
     public class TagMap : ClassMapping<Tag> 

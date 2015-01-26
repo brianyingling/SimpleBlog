@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using SimpleBlog.Infrastructure;
+using SimpleBlog.Infrastructure.Extensions;
 using NHibernate.Linq;
 using SimpleBlog.Models;
 using SimpleBlog.Areas.Admin.ViewModels;
@@ -32,9 +33,16 @@ namespace SimpleBlog.Areas.Admin.Controllers
 
         public ActionResult New() 
         {
-            return View("Form", new PostsForm 
+            return View("Form", new PostsForm
                 {
-                    IsNew = true
+                    IsNew = true,
+                    Tags = Database.Session.Query<Tag>().Select(tag => new TagCheckbox 
+                    {
+                        Id = tag.Id,
+                        Name = tag.Name,
+                        IsChecked = false
+                    }).ToList()
+
                 });
         }
 
@@ -49,7 +57,13 @@ namespace SimpleBlog.Areas.Admin.Controllers
                 PostId = id,
                 Title = post.Title,
                 Slug = post.Slug,
-                Content = post.Content
+                Content = post.Content,
+                Tags = Database.Session.Query<Tag>().Select(tag => new TagCheckbox 
+                {
+                    Id = tag.Id, 
+                    Name = tag.Name,
+                    IsChecked = post.Tags.Contains(tag)
+                }).ToList()
             });
         }
         
@@ -62,6 +76,8 @@ namespace SimpleBlog.Areas.Admin.Controllers
                 return View(form);
             }
 
+            var selectedTags = ReconsileTags(form.Tags).ToList();
+
             Post post;
             if (form.IsNew)
             {
@@ -70,6 +86,10 @@ namespace SimpleBlog.Areas.Admin.Controllers
                     CreatedAt = DateTime.UtcNow,
                     User = Auth.User
                 };
+
+                foreach (var tag in selectedTags) {
+                    post.Tags.Add(tag);   
+                }
             }
             else {
                 post = Database.Session.Load<Post>(form.PostId);
@@ -78,6 +98,14 @@ namespace SimpleBlog.Areas.Admin.Controllers
                 }
 
                 post.UpdatedAt = DateTime.UtcNow;
+
+                foreach (var toAdd in selectedTags.Where(t => !post.Tags.Contains(t))) {
+                    post.Tags.Add(toAdd);
+                }
+
+                foreach (var toRemove in selectedTags.Where(t => !selectedTags.Contains(t)).ToList()) {
+                    post.Tags.Remove(toRemove);
+                }
             }
 
             post.Title = form.Title;
@@ -120,7 +148,30 @@ namespace SimpleBlog.Areas.Admin.Controllers
             post.DeletedAt = null;
             Database.Session.Update(post);
             return RedirectToAction("index");
-        } 
+        }
 
+        private IEnumerable<Tag> ReconsileTags(IEnumerable<TagCheckbox> tags) {
+            foreach (var tag in tags.Where(t => t.IsChecked)) {
+                if (tag.Id != null) {
+                    yield return Database.Session.Load<Tag>(tag.Id);
+                    continue;
+                }
+
+                var existingTag = Database.Session.Query<Tag>().FirstOrDefault(t => t.Name == tag.Name);
+                if (existingTag != null) {
+                    yield return existingTag;
+                    continue;
+                }
+
+                var newTag = new Tag
+                {
+                    Name = tag.Name,
+                    Slug = tag.Name.Slugify()
+                };
+
+                Database.Session.Save(newTag);
+                yield return newTag;
+            }
+        }
     }
 }

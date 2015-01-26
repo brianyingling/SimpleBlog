@@ -23,6 +23,10 @@ namespace SimpleBlog.Models
         public virtual Boolean IsDeleted { get { return DeletedAt != null;  } }
 
         public virtual IList<Tag> Tags { get; set; }
+
+        public Post() {
+            Tags = new List<Tag>();
+        }
     }
 
     public class PostMap : ClassMapping<Post> 
