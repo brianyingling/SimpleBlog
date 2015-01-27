@@ -137,6 +137,7 @@
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Admin\Controllers\PostsController.cs" />
     <Compile Include="Areas\Admin\Controllers\UsersController.cs" />
+    <Compile Include="ViewModels\Posts.cs" />
     <Content Include="Areas\Admin\Scripts\PostEditor.js" />
     <Compile Include="Areas\Admin\ViewModels\Posts.cs" />
     <Compile Include="Areas\Admin\ViewModels\Users.cs" />
@@ -450,6 +451,10 @@
     </Content>
     <Content Include="Views\Web.config" />
     <Content Include="Tools\DeployDb-Dev.bat" />
+    <Content Include="Views\Posts\_Posts.cshtml" />
+    <Content Include="Views\Posts\_Post.cshtml" />
+    <Content Include="Views\Posts\Show.cshtml" />
+    <Content Include="Views\Posts\Tag.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
